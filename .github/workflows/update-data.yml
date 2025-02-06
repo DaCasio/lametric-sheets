@@ -4,7 +4,7 @@ on:
     - cron: "*/5 * * * *"  # Läuft alle 5 Minuten
   workflow_dispatch:       # Manueller Trigger
 
-  permissions:
+permissions:
   contents: write
 
 jobs:
