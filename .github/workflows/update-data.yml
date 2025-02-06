@@ -4,6 +4,9 @@ on:
     - cron: "*/5 * * * *"  # Läuft alle 5 Minuten
   workflow_dispatch:       # Manueller Trigger
 
+  permissions:
+  contents: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
