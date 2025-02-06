@@ -1,25 +1,25 @@
-name: Update Google Sheet Data
+name: Update CSV from Google Sheet
 on:
+  workflow_dispatch:   # Manuelles Auslösen
   schedule:
-    - cron: "*/5 * * * *"  # Läuft alle 5 Minuten
-  workflow_dispatch:       # Manueller Trigger
+    - cron: "*/5 * * * *"  # Alle 5 Minuten
 
 permissions:
-  contents: write
+  contents: write      # Schreibrechte für Commits
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Fetch Data from Google Sheet
+      - name: Download Google Sheet as CSV
         run: |
-          # Lade die Daten aus der öffentlichen Google Sheet-URL als CSV herunter
           curl -L "https://docs.google.com/spreadsheets/d/1_shdcAB2-cR7D0nSyBSx1c6kU15-g9GvI9XbJK4HuGY/export?format=csv&gid=0" -o data.csv
 
-      - name: Commit Changes
+      - name: Commit CSV
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update data.csv"
+          files: data.csv
