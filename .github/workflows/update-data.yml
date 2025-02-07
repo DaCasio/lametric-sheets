@@ -2,7 +2,7 @@ name: Update CSV from Google Sheet
 on:
   workflow_dispatch:   # Manuelles Auslösen
   schedule:
-    - cron: "0 * * * *"  # Jede Stunde zur vollen Stunde
+    - cron: "0 6-21 * * *"  # Jede Stunde von 7:00 bis 22:00 MEZ
 
 permissions:
   contents: write      # Schreibrechte für Commits
