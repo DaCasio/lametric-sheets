@@ -10,22 +10,22 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # Verhindert Hänger
+    timeout-minutes: 5
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Verbessert Git-History
+          fetch-depth: 0
 
       - name: Download Google Sheet as CSV
         run: |
-          set -euo pipefail  # Stoppt bei Fehlern
+          set -euo pipefail
           curl -L "https://docs.google.com/spreadsheets/d/1_shdcAB2-cR7D0nSyBSx1c6kU15-g9GvI9XbJK4HuGY/export?format=csv&gid=0" -o data.csv
-          [ -s data.csv ] || (echo "CSV ist leer!" && exit 1)  # Prüft leere Dateien
+          [ -s data.csv ] || (echo "CSV ist leer!" && exit 1)
 
       - name: Validate CSV Format
         run: |
-          if ! head -1 data.csv | grep -q "Wert"; then  # Prüft Header
+          if ! head -1 data.csv | grep -q "Wert"; then
             echo "Fehler: Ungültiges CSV-Format"
             exit 1
           fi
@@ -35,17 +35,4 @@ jobs:
         with:
           commit_message: "Update data.csv"
           files: data.csv
-          add: "data.csv"  # Explizites Staging
-
-      - name: Notify Failure
-        if: failure()
-        uses: actions/email-to-github@v1
-        with:
-          to: carsten.hasshoff@yahoo.de
-          subject: "Workflow-Fehler"
-
-      - name: Cache Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache
-          key: ${{ runner.os }}-cache
+          add: "data.csv"
