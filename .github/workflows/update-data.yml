@@ -41,7 +41,7 @@ jobs:
         if: failure()
         uses: actions/email-to-github@v1
         with:
-          to: your@email.com
+          to: carsten.hasshoff@yahoo.de
           subject: "Workflow-Fehler"
 
       - name: Cache Dependencies
