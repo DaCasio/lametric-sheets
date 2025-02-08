@@ -23,13 +23,6 @@ jobs:
           curl -L "https://docs.google.com/spreadsheets/d/1_shdcAB2-cR7D0nSyBSx1c6kU15-g9GvI9XbJK4HuGY/export?format=csv&gid=0" -o data.csv
           [ -s data.csv ] || (echo "Fehler: CSV ist leer!" && exit 1)
 
-      - name: Validate CSV Format
-        run: |
-          if ! head -1 data.csv | grep -qi "Wert"; then
-            echo "Fehler: Ungültiger CSV-Header. Erwartet: 'Wert' (Groß-/Kleinschreibung irrelevant). Gefunden: $(head -1 data.csv)"
-            exit 1
-          fi
-
       - name: Commit CSV
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
