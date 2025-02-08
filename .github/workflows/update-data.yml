@@ -1,28 +1,38 @@
 name: Update CSV from Google Sheet
 on:
-  workflow_dispatch:   # Manuelles Auslösen
+  workflow_dispatch:
   schedule:
-    - cron: "0 6-21 * * *"  # Jede Stunde von 7:00 bis 22:00 MEZ
+    - cron: "0 6-21 * * *"  # 7-22 Uhr MEZ
 
 permissions:
-  contents: write      # Schreibrechte für Commits
+  contents: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 5  # 🔴 Verhindert Hänger
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 🔴 Verbessert Git-History
 
       - name: Download Google Sheet as CSV
         run: |
+          set -euo pipefail  # 🔴 Stoppt bei Fehlern
           curl -L "https://docs.google.com/spreadsheets/d/1_shdcAB2-cR7D0nSyBSx1c6kU15-g9GvI9XbJK4HuGY/export?format=csv&gid=0" -o data.csv
+          [ -s data.csv ] || (echo "CSV ist leer!" && exit 1)  # 🔴 Prüft leere Dateien
 
-      - name: Debug CSV-Inhalt
-        run: cat data.csv  # Zeigt den CSV-Inhalt im Log
+      - name: Validate CSV Format
+        run: |
+          if ! head -1 data.csv | grep -q "Wert"; then  # 🔴 Prüft Header
+            echo "Fehler: Ungültiges CSV-Format"
+            exit 1
+          fi
 
       - name: Commit CSV
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update data.csv"
           files: data.csv
+          add: "data.csv"  # 🔴 Explizites Staging
